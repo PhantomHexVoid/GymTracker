@@ -1,0 +1,17 @@
+{
+  "name": "GymTracker — BETA",
+  "short_name": "GymTracker",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#151d22",
+  "theme_color": "#151d22",
+  "description": "Suivi de tes séances de musculation.",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
