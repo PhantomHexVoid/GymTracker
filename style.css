@@ -58,3 +58,15 @@
 .tracked-card{gap:10px}
 
 .version-tag{letter-spacing:1px;font-size:9px;opacity:.85;margin-left:5px}
+
+/* 0.3.4-beta: compact splash, matching GymTracker's charcoal + mint palette */
+.splash{background:#151d22;padding:16px}
+.splash-brand{width:auto;max-width:260px;gap:0}
+.splash-mark{width:42px;height:42px;flex-basis:42px;border-radius:13px;font-size:22px;margin-bottom:10px;background:#202b30;color:#72d6a0;border:1px solid #2b383d}
+.splash-brand strong{font-size:22px;line-height:1.05;letter-spacing:-.5px}
+.splash-brand small{font-size:9px;letter-spacing:1.8px;margin-top:4px;color:#72d6a0}
+.loading-area{width:160px;margin-top:14px;gap:8px}
+.loading-track{width:96px;height:3px;background:#2b383d}
+.loading-progress{background:#72d6a0;box-shadow:0 0 6px #72d6a066}
+.loading-area p{font-size:10px;color:#9aa9ad;text-align:center}
+@media(max-width:420px){.splash-mark{width:42px;height:42px;flex-basis:42px;border-radius:13px;margin-bottom:10px}.splash-brand small{font-size:9px}.loading-area{margin-top:14px}.loading-area p{font-size:10px}}
