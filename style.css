@@ -7,15 +7,52 @@
 @keyframes loading-sweep{0%{transform:translateX(-110%)}50%{transform:translateX(95%)}100%{transform:translateX(290%)}}
 
 /* Splash screen inspired by the supplied NutriTracker reference */
-.splash{position:fixed;inset:0;z-index:1000;background:#0d1b16;padding:24px;display:flex;align-items:center;justify-content:center;transition:opacity .35s ease,visibility .35s ease}
+.splash{position:fixed;inset:0;z-index:1000;background:var(--bg);padding:20px;display:flex;align-items:center;justify-content:center;transition:opacity .3s ease,visibility .3s ease}
 .splash.hide{opacity:0;visibility:hidden;pointer-events:none}
 .splash-brand{width:100%;display:flex;flex-direction:column;align-items:center;gap:0;text-align:center}
-.splash-mark{width:144px;height:144px;flex:0 0 144px;border-radius:42px;background:#ddf2e7;color:#17382c;display:grid;place-items:center;font-size:54px;font-weight:400;margin:0 0 78px;line-height:1}
-.splash-brand strong{font-size:clamp(34px,8vw,54px);line-height:1.12;letter-spacing:-1.8px;color:#fff}
-.splash-brand small{font-size:22px;letter-spacing:3px;color:#b2c9bd;text-transform:lowercase;margin-top:16px}
-.loading-area{width:min(100%,360px);margin-top:80px;display:flex;flex-direction:column;align-items:center;gap:25px}
-.loading-track{width:238px;height:8px;margin:0;border-radius:99px;background:#3b4b44;overflow:hidden}
-.loading-progress{display:block;width:40%;height:100%;border-radius:99px;background:#a4e2bc;box-shadow:0 0 8px #a4e2bc66;animation:loading-sweep 1.35s ease-in-out infinite}
-.loading-area p{margin:0;color:#b2c9bd;font-size:17px;line-height:1.4;font-weight:400}
+.splash-mark{width:72px;height:72px;flex:0 0 72px;border-radius:20px;background:var(--panel2);color:var(--green);display:grid;place-items:center;font-size:30px;font-weight:500;margin:0 0 20px;line-height:1;border:1px solid var(--line)}
+.splash-brand strong{font-size:clamp(27px,7vw,34px);line-height:1.1;letter-spacing:-1px;color:#edf3f1}
+.splash-brand small{font-size:11px;letter-spacing:2px;color:var(--green);text-transform:none;margin-top:7px;font-weight:700}
+.loading-area{width:min(100%,250px);margin-top:27px;display:flex;flex-direction:column;align-items:center;gap:13px}
+.loading-track{width:150px;height:4px;margin:0;border-radius:99px;background:var(--line);overflow:hidden}
+.loading-progress{display:block;width:38%;height:100%;border-radius:99px;background:var(--green);box-shadow:0 0 10px #72d6a088;animation:loading-sweep 1.25s ease-in-out infinite}
+.loading-area p{margin:0;color:var(--muted);font-size:12px;line-height:1.4;font-weight:400}
 @keyframes loading-sweep{0%{transform:translateX(-110%)}50%{transform:translateX(95%)}100%{transform:translateX(290%)}}
-@media(max-width:420px){.splash-mark{width:116px;height:116px;flex-basis:116px;border-radius:34px;margin-bottom:48px}.splash-brand small{font-size:18px}.loading-area{margin-top:72px}.loading-area p{font-size:15px}}
+@media(max-width:420px){.splash-mark{width:64px;height:64px;flex-basis:64px;border-radius:18px;margin-bottom:17px}.splash-brand small{font-size:10px}.loading-area{margin-top:24px}.loading-area p{font-size:11px}}
+
+
+/* Simplified home-first exercise tracker */
+.simple-heading{display:flex;flex-direction:column;gap:5px;margin-bottom:5px}
+.simple-heading h1{font-size:30px;line-height:1.08;margin:0;letter-spacing:-.8px}
+.simple-heading .muted{margin:0;font-size:13px}
+.section-heading{font-size:18px;margin:0}
+.tracked-list{display:flex;flex-direction:column;gap:12px}
+.tracked-card{background:var(--panel);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:13px}
+.exercise-title{display:flex;align-items:center;gap:10px;min-width:0}
+.exercise-title strong{font-size:14px}.exercise-title small{display:block;color:var(--muted);font-size:11px;margin-top:3px}
+.remove-btn{background:none;border:0;color:var(--muted);font-size:22px;padding:2px 8px}
+.weight-columns{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.weight-box{background:#151e23;border:1px solid var(--line);border-radius:12px;padding:10px;min-width:0}
+.weight-box>span{display:block;color:var(--muted);font-size:10px;margin-bottom:9px}
+.weight-value{display:flex;align-items:center;gap:5px}.weight-value input{border:0;background:transparent;padding:0;min-height:28px;font-size:21px;font-weight:800;width:100%;min-width:0}.weight-value b{font-size:11px;color:var(--muted)}
+.current-box{background:#1c3027;border-color:#345c46}
+.current-controls{display:flex;align-items:center;justify-content:space-between;gap:4px}
+.current-controls strong{font-size:20px;white-space:nowrap}.current-controls strong small{font-size:11px;color:var(--muted);margin-left:3px}
+.step-btn{width:34px;height:34px;flex:0 0 34px;border:1px solid #477657;background:#294638;color:#c6f2d5;border-radius:10px;font-size:22px;line-height:1}
+.progress-note{font-size:11px;color:var(--green);font-weight:700}
+.add-panel{gap:13px}.add-panel .section-heading{margin-bottom:2px}
+.history-link{background:none;border:0;color:var(--green);padding:12px;font-weight:700}
+.bottom-nav{grid-template-columns:repeat(2,1fr);height:68px}
+
+/* Make the initial weight secondary; give the current weight the focus */
+.weight-columns{display:block}
+.current-weight-panel{background:#1c3027;border:1px solid #345c46;border-radius:13px;padding:12px 13px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.current-label{font-size:10px;letter-spacing:1px;color:#b2c9bd;font-weight:800}
+.current-controls{display:flex;align-items:center;justify-content:flex-end;gap:12px}
+.current-controls strong{font-size:27px;white-space:nowrap;color:#f2fff6}
+.current-controls strong small{font-size:12px;color:#b2c9bd;margin-left:4px}
+.initial-compact{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:2px 3px 0;color:var(--muted);font-size:11px}
+.initial-compact label{display:flex;align-items:center;gap:4px}
+.initial-compact input{width:68px;min-height:28px;padding:3px 5px;text-align:right;background:transparent;border:0;border-bottom:1px solid var(--line);border-radius:0;color:#c2cfca;font-size:12px}
+.initial-compact b{font-size:10px;color:var(--muted);font-weight:500}
+.tracked-card{gap:10px}

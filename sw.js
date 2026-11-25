@@ -1,4 +1,4 @@
-const CACHE='gymtracker-beta-cache-v5';
+const CACHE='gymtracker-beta-cache-v8';
 const FILES=['./','./index.html','./style.css','./app.js','./manifest.json','./icon.svg','./version.json'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES))));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('gymtracker-beta-cache-')&&key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
