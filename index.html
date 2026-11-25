@@ -24,7 +24,7 @@
   </div>
   <div class="app-shell">
     <header class="topbar">
-      <div class="brand"><span class="brand-mark">✚</span><span><strong>GymTracker</strong><small>BETA</small></span></div>
+      <div class="brand"><span class="brand-mark">✚</span><span><strong>GymTracker</strong><small>BETA <span class="version-tag" id="appVersion">0.3.3</span></small></span></div>
       <button class="icon-button" id="settingsBtn" aria-label="Paramètres">⚙</button>
     </header>
     <main id="app" class="main-content"></main>
@@ -52,6 +52,7 @@
     window.addEventListener("load", () => setTimeout(() => splash.classList.add("hide"), 1100));
     const updateDialog = document.getElementById("updateDialog");
     const updateKey = "gymtracker-installed-release";
+    fetch("./version.json", {cache:"no-store"}).then(r => r.json()).then(v => { document.getElementById("appVersion").textContent = v.release.replace(/-beta$/i, ""); }).catch(() => {});
     async function checkForUpdate() {
       try {
         const response = await fetch("./version.json", {cache:"no-store"});

@@ -12,4 +12,4 @@ Décompresse l'archive et téléverse les 8 fichiers directement à la racine du
 - L'historique des séances reste accessible depuis le lien dédié.
 - Les données sont stockées localement dans le navigateur. Exporte une sauvegarde depuis les paramètres.
 
-Version 0.3.0-beta.
+Version 0.3.3-beta.
