@@ -12,4 +12,4 @@ Décompresse l'archive et téléverse les 11 fichiers directement à la racine d
 - L'historique des séances reste accessible depuis le lien dédié.
 - Les données sont stockées localement dans le navigateur. Exporte une sauvegarde depuis les paramètres.
 
-Version 0.4.2-beta.\n\nIcônes : `icon.svg`, `icon-192.png`, `icon-512.png` et `apple-touch-icon.png`.
+Version 0.4.2.1-beta.\n\nIcônes : `icon.svg`, `icon-192.png`, `icon-512.png` et `apple-touch-icon.png`.

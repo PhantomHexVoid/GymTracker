@@ -97,7 +97,7 @@ document.addEventListener('click',e=>{
  if(a==='step'){const x=data.trackedExercises[Number(b.dataset.index)];if(!x)return;x.current=Math.max(0,Math.round((Number(x.current)+Number(b.dataset.delta))*10)/10);save();render();return}
  if(a==='remove'){if(confirm('Retirer cet exercice de ta page ?')){data.trackedExercises.splice(Number(b.dataset.index),1);save();render()}return}
 });
-app.addEventListener('change',e=>{\n if(e.target.id==='statsExerciseSelect'){window.gymStatsExercise=e.target.value;render();return}
+app.addEventListener('change',e=>{
  if(e.target.matches('[data-field="initial"]')){const i=Number(e.target.dataset.index),v=Number(e.target.value);if(Number.isFinite(v)&&v>=0){data.trackedExercises[i].initial=v;save();render()}}
 });
 document.getElementById('settingsBtn')?.addEventListener('click',()=>document.getElementById('settingsDialog').showModal());
