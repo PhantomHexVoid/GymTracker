@@ -70,3 +70,14 @@
 .loading-progress{background:#72d6a0;box-shadow:0 0 6px #72d6a066}
 .loading-area p{font-size:10px;color:#9aa9ad;text-align:center}
 @media(max-width:420px){.splash-mark{width:42px;height:42px;flex-basis:42px;border-radius:13px;margin-bottom:10px}.splash-brand small{font-size:9px}.loading-area{margin-top:14px}.loading-area p{font-size:10px}}
+
+/* 0.3.9-beta: quick add action and iPhone double-tap handling */
+.progress-actions{display:flex;align-items:center;gap:10px}
+.add-icon-btn{width:38px;height:38px;border:0;border-radius:12px;background:var(--green);color:#102019;font-size:27px;line-height:1;font-weight:500;display:grid;place-items:center;box-shadow:0 3px 10px #0002}
+.app-dialog{display:flex;flex-direction:column;gap:15px}
+.app-dialog:not([open]){display:none}
+.app-dialog .field{display:flex;flex-direction:column;gap:7px}
+.app-dialog select,.app-dialog input{width:100%;min-height:46px;border-radius:11px;padding:10px 12px;background:#151d22;color:#edf3f1;border:1px solid var(--line);font:inherit}
+.app-dialog .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button,a,input,select,textarea{touch-action:manipulation}
+html,body{overscroll-behavior-y:contain}

@@ -26,7 +26,7 @@ function home(){
  const rows=data.trackedExercises;
  return `<section class="page">
  ${heading('SUIVI DE PROGRESSION','Mes exercices','Tes poids de départ et tes poids actuels, au même endroit.')}
- <div class="row-between"><h2 class="section-heading">Ma progression</h2><span class="pill">${rows.length} exercice${rows.length>1?'s':''}</span></div>
+ <div class="row-between"><h2 class="section-heading">Ma progression</h2><div class="progress-actions"><span class="pill">${rows.length} exercice${rows.length>1?'s':''}</span><button class="add-icon-btn" data-action="open-add" aria-label="Ajouter un exercice" title="Ajouter un exercice">＋</button></div></div>
  ${rows.length?`<div class="tracked-list">${rows.map((x,i)=>`<article class="tracked-card">
   <div class="row-between"><div class="exercise-title"><span class="mini-icon">✦</span><div><strong>${esc(x.name)}</strong><small>${esc(x.category||'Exercice personnalisé')}</small></div></div><button class="remove-btn" aria-label="Supprimer ${esc(x.name)}" data-action="remove" data-index="${i}">×</button></div>
   <div class="current-weight-panel">
@@ -35,18 +35,20 @@ function home(){
   </div>
   <div class="initial-compact"><span>Poids initial</span><label><input aria-label="Poids initial de ${esc(x.name)}" type="number" min="0" step="0.5" value="${x.initial}" data-field="initial" data-index="${i}"><b>kg</b></label></div>
   <div class="progress-note">${Number(x.current)>=Number(x.initial)?`+${(Number(x.current)-Number(x.initial)).toLocaleString('fr-FR',{maximumFractionDigits:1})} kg depuis le départ`:`${(Number(x.current)-Number(x.initial)).toLocaleString('fr-FR',{maximumFractionDigits:1})} kg depuis le départ`}</div>
- </article>`).join('')}</div>`:`<div class="empty-state"><span class="mini-icon">✦</span><b>Pas encore d'exercice suivi</b><span>Ajoute tes exercices ci-dessous pour comparer ton poids initial et ton poids actuel.</span></div>`}
- <div class="panel add-panel"><h2 class="section-heading">＋ Ajouter un exercice</h2>
+ </article>`).join('')}</div>`:`<div class="empty-state"><span class="mini-icon">✦</span><b>Pas encore d'exercice suivi</b><span>Appuie sur le + pour ajouter tes premiers exercices.</span></div>`}
+ <dialog id="addExerciseDialog" class="app-dialog">
+  <div class="dialog-head"><h2>Ajouter un exercice</h2><button class="icon-button" data-action="close-add" aria-label="Fermer">✕</button></div>
   <label class="field">Choisir un exercice<select id="addExerciseSelect"><option value="">Sélectionner...</option>${library.map((x,i)=>`<option value="${i}">${esc(x.name)} · ${esc(x.category)}</option>`).join('')}</select></label>
   <div class="form-grid">
    <label class="field">Poids initial (kg)<input id="newInitial" type="number" min="0" step="0.5" placeholder="Ex. 20"></label>
    <label class="field">Poids actuel (kg)<input id="newCurrent" type="number" min="0" step="0.5" placeholder="Ex. 35"></label>
   </div>
   <button class="primary-button full" data-action="add">Ajouter à ma page</button>
- </div>
+ </dialog>
  <button class="history-link full" data-page="history">Voir mon historique de séances →</button>
  </section>`;
 }
+
 function history(){
  return `<section class="page">${heading('MES ENTRAÎNEMENTS','Historique','Les séances enregistrées sur cet appareil.')}
  ${data.workouts.length?`<div class="stack">${[...data.workouts].reverse().map(w=>`<article class="panel workout-card"><div class="row-between"><strong>${esc(w.name||'Séance')}</strong><small>${new Date(w.date).toLocaleDateString('fr-FR')}</small></div>${(w.exercises||[]).map(e=>`<div class="row-between"><span>${esc(e.exerciseName)}</span><small>${e.sets?.length||0} séries</small></div>`).join('')}</article>`).join('')}</div>`:`<div class="empty-state">Tu n'as pas encore de séance enregistrée.</div>`}
@@ -63,7 +65,7 @@ app.addEventListener('click',e=>{
   const ex=library[n],initial=Number(document.getElementById('newInitial').value),current=Number(document.getElementById('newCurrent').value);
   if(!Number.isFinite(initial)||!Number.isFinite(current)||document.getElementById('newInitial').value===''||document.getElementById('newCurrent').value===''||initial<0||current<0){alert('Renseigne les deux poids (initial et actuel).');return}
   if(data.trackedExercises.some(x=>x.name===ex.name)){alert('Cet exercice est déjà dans ta liste.');return}
-  data.trackedExercises.push({id:'track-'+Date.now(),exerciseId:ex.id,name:ex.name,category:ex.category,initial,current});save();render();
+  data.trackedExercises.push({id:'track-'+Date.now(),exerciseId:ex.id,name:ex.name,category:ex.category,initial,current});save();document.getElementById('addExerciseDialog')?.close();render();
  }
  if(a==='step'){const x=data.trackedExercises[Number(b.dataset.index)];x.current=Math.max(0,Math.round((Number(x.current)+Number(b.dataset.delta))*10)/10);save();render()}
  if(a==='remove'){if(confirm('Retirer cet exercice de ta page ?')){data.trackedExercises.splice(Number(b.dataset.index),1);save();render()}}
