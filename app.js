@@ -11,6 +11,7 @@ const library=[
 ].map((x,i)=>({id:'lib'+i,name:x[0],category:x[1]}));
 let data;try{data=JSON.parse(localStorage.getItem(KEY))||{}}catch{data={}}
 data.workouts=data.workouts||[];
+data.programs=Array.isArray(data.programs)?data.programs:[];
 data.trackedExercises=data.trackedExercises||[];
 data.progressHistory=Array.isArray(data.progressHistory)?data.progressHistory:[];
 // Bring across exercises entered in the previous "point de départ" screen.
@@ -46,32 +47,33 @@ function home(){
   </div>
   <button class="primary-button full" data-action="add">Ajouter à ma page</button>
  </dialog>
- <button class="history-link full" data-page="history">Voir mon historique de séances →</button>
+ <button class="history-link full" data-page="sessions">Créer mes programmes hebdomadaires →</button>
  </section>`;
 }
 
-function history(){
- return `<section class="page">${heading('MES ENTRAÎNEMENTS','Historique','Les séances enregistrées sur cet appareil.')}
- ${data.workouts.length?`<div class="stack">${[...data.workouts].reverse().map(w=>`<article class="panel workout-card"><div class="row-between"><strong>${esc(w.name||'Séance')}</strong><small>${new Date(w.date).toLocaleDateString('fr-FR')}</small></div>${(w.exercises||[]).map(e=>`<div class="row-between"><span>${esc(e.exerciseName)}</span><small>${e.sets?.length||0} séries</small></div>`).join('')}</article>`).join('')}</div>`:`<div class="empty-state">Tu n'as pas encore de séance enregistrée.</div>`}
- <button class="secondary-button full" data-page="home">← Retour à mes exercices</button></section>`;
+function sessions(){
+ const days=['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
+ const programs=data.programs||[];
+ const cards=programs.length?`<div class="stack">${programs.map((p,i)=>`<article class="panel workout-card">
+  <div class="row-between"><strong>${esc(p.name)}</strong><button class="remove-btn" data-action="delete-program" data-index="${i}" aria-label="Supprimer ${esc(p.name)}">×</button></div>
+  <div class="program-days">${(p.days||[]).map(d=>`<span class="day-chip">${esc(d)}</span>`).join('')}</div>
+  <div class="program-exercises">${(p.exerciseIds||[]).map(id=>data.trackedExercises.find(x=>x.id===id)).filter(Boolean).map(x=>`<div class="row-between"><span>${esc(x.name)}</span><small>${Number(x.current).toLocaleString('fr-FR',{maximumFractionDigits:1})} kg</small></div>`).join('')}</div>
+  <button class="text-button" data-action="edit-program" data-index="${i}">Modifier le programme</button>
+ </article>`).join('')}</div>`:`<div class="empty-state"><span class="mini-icon">✦</span><b>Aucun programme pour le moment</b><span>Crée tes séances hebdomadaires à partir de tes exercices enregistrés.</span></div>`;
+ return `<section class="page">${heading('TON PLANNING','Séances','Organise tes programmes de la semaine.')}
+ <button class="primary-button full" data-action="open-program">＋ Créer un programme</button>${cards}
+ <dialog id="programDialog" class="app-dialog">
+  <div class="dialog-head"><h2 id="programDialogTitle">Nouveau programme</h2><button class="icon-button" data-action="close-program" aria-label="Fermer">✕</button></div>
+  <label class="field">Nom du programme<input id="programName" type="text" placeholder="Ex. Haut du corps" maxlength="50"></label>
+  <div class="field"><b>Jours de la semaine</b><div class="day-options">${days.map(d=>`<label class="day-option"><input type="checkbox" name="programDay" value="${d}"><span>${d}</span></label>`).join('')}</div></div>
+  <div class="field"><b>Exercices</b><div class="program-exercise-options">${data.trackedExercises.length?data.trackedExercises.map(x=>`<label class="exercise-option"><input type="checkbox" name="programExercise" value="${esc(x.id)}"><span>${esc(x.name)}</span></label>`).join(''):'<p class="muted">Ajoute d’abord des exercices dans « Mes exercices ».</p>'}</div></div>
+  <button class="primary-button full" data-action="save-program">Enregistrer le programme</button>
+ </dialog></section>`;
 }
 
-function stats(){
- const rows=data.trackedExercises;
- const totalGain=rows.reduce((sum,x)=>sum+(Number(x.current)-Number(x.initial)),0);
- const workoutCount=data.workouts.length;
- return `<section class="page">
-  ${heading('TES RÉSULTATS','Statistiques','Un aperçu simple de ta progression.')}
-  <div class="stats-grid">
-   <article class="stat-card"><span>Exercices suivis</span><strong>${rows.length}</strong></article>
-   <article class="stat-card"><span>Séances enregistrées</span><strong>${workoutCount}</strong></article>
-   <article class="stat-card"><span>Progression cumulée</span><strong>${totalGain>=0?'+':''}${totalGain.toLocaleString('fr-FR',{maximumFractionDigits:1})} kg</strong></article>
-  </div>
-  <p class="stats-hint">Retrouve tes poids de départ et tes poids actuels dans l’onglet Mes exercices.</p>
- </section>`;
-}
+function render(){app.innerHTML=page==='home'?home():sessions();document.querySelectorAll('.bottom-nav button[data-page]').forEach(nav=>nav.classList.toggle('active',nav.dataset.page===page));}
+let editingProgram=-1;
 
-function render(){app.innerHTML=page==='home'?home():page==='history'?history():stats();}
 document.addEventListener('click',e=>{
  const b=e.target.closest('button');if(!b)return;
  if(b.dataset.page){
@@ -82,6 +84,11 @@ document.addEventListener('click',e=>{
   return;
  }
  const a=b.dataset.action;
+ if(a==='open-program'){editingProgram=-1;const dlg=document.getElementById('programDialog');if(!dlg)return;document.getElementById('programDialogTitle').textContent='Nouveau programme';document.getElementById('programName').value='';dlg.querySelectorAll('input[type="checkbox"]').forEach(x=>x.checked=false);dlg.showModal();return}
+ if(a==='close-program'){document.getElementById('programDialog')?.close();return}
+ if(a==='edit-program'){editingProgram=Number(b.dataset.index);const p=data.programs[editingProgram],dlg=document.getElementById('programDialog');document.getElementById('programDialogTitle').textContent='Modifier le programme';document.getElementById('programName').value=p.name||'';dlg.querySelectorAll('input[name="programDay"]').forEach(x=>x.checked=(p.days||[]).includes(x.value));dlg.querySelectorAll('input[name="programExercise"]').forEach(x=>x.checked=(p.exerciseIds||[]).includes(x.value));dlg.showModal();return}
+ if(a==='save-program'){const name=document.getElementById('programName').value.trim();const days=[...document.querySelectorAll('input[name="programDay"]:checked')].map(x=>x.value);const exerciseIds=[...document.querySelectorAll('input[name="programExercise"]:checked')].map(x=>x.value);if(!name){alert('Donne un nom à ton programme.');return}if(!days.length){alert('Choisis au moins un jour.');return}if(!exerciseIds.length){alert('Choisis au moins un exercice.');return}const item={name,days,exerciseIds};if(editingProgram>=0)data.programs[editingProgram]=item;else data.programs.push(item);save();document.getElementById('programDialog').close();render();return}
+ if(a==='delete-program'){if(confirm('Supprimer ce programme ?')){data.programs.splice(Number(b.dataset.index),1);save();render()}return}
  if(a==='open-add'){document.getElementById('addExerciseDialog')?.showModal();return}
  if(a==='close-add'){document.getElementById('addExerciseDialog')?.close();return}
  if(a==='add'){
@@ -104,7 +111,8 @@ document.getElementById('settingsBtn')?.addEventListener('click',()=>document.ge
 document.getElementById('closeSettings')?.addEventListener('click',()=>document.getElementById('settingsDialog').close());
 document.getElementById('exportBtn')?.addEventListener('click',()=>{const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='gymtracker-sauvegarde.json';a.click();URL.revokeObjectURL(url)});
 document.getElementById('importFile')?.addEventListener('change',async e=>{try{const v=JSON.parse(await e.target.files[0].text());if(!Array.isArray(v.trackedExercises)&&!Array.isArray(v.workouts))throw Error();data=v;data.trackedExercises=data.trackedExercises||[];
-data.progressHistory=Array.isArray(data.progressHistory)?data.progressHistory:[];data.workouts=data.workouts||[];save();render();alert('Sauvegarde importée.')}catch{alert('Fichier invalide.')}});
+data.progressHistory=Array.isArray(data.progressHistory)?data.progressHistory:[];data.workouts=data.workouts||[];
+data.programs=Array.isArray(data.programs)?data.programs:[];save();render();alert('Sauvegarde importée.')}catch{alert('Fichier invalide.')}});
 document.getElementById('clearBtn')?.addEventListener('click',()=>{if(confirm('Effacer toutes les données ?')){data={workouts:[],trackedExercises:[]};save();render();document.getElementById('settingsDialog').close()}});
 render();
 })();

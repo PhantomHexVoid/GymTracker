@@ -99,3 +99,15 @@ html,body{overscroll-behavior-y:contain}
 
 
 .stats-hint{color:var(--muted);font-size:11px;line-height:1.5;margin:0}
+
+/* 0.5.0-beta — programmes hebdomadaires */
+.bottom-nav{grid-template-columns:repeat(2,1fr)}
+.day-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.day-option,.exercise-option{display:flex;align-items:center;gap:9px;background:#202a30;border:1px solid #344148;border-radius:10px;padding:10px;font-size:13px}
+.day-option input,.exercise-option input{accent-color:#72d6a0;width:17px;height:17px;flex:0 0 auto}
+.program-exercise-options{display:flex;flex-direction:column;gap:7px;max-height:220px;overflow:auto}
+.program-days{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.day-chip{background:#203b2e;color:#aee9c4;border:1px solid #345c46;border-radius:999px;padding:5px 9px;font-size:11px;font-weight:700}
+.program-exercises{display:flex;flex-direction:column;gap:9px;margin:10px 0;color:#dce7e2;font-size:13px}
+.program-exercises small{color:#72d6a0}
+.text-button{background:transparent;border:0;color:#72d6a0;padding:8px 0;font-weight:700}
