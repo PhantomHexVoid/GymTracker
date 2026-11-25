@@ -11,6 +11,17 @@
   <title>GymTracker — BETA</title>
 </head>
 <body>
+  <div id="splash" class="splash">
+    <div class="splash-brand">
+      <span class="splash-mark" aria-hidden="true">✦</span>
+      <strong>GymTracker</strong>
+      <small>by Phantom</small>
+      <div class="loading-area">
+        <div class="loading-track" role="progressbar" aria-label="Chargement"><span class="loading-progress"></span></div>
+        <p>Préparation de ton espace d'entraînement...</p>
+      </div>
+    </div>
+  </div>
   <div class="app-shell">
     <header class="topbar">
       <div class="brand"><span class="brand-mark">✚</span><span><strong>GymTracker</strong><small>BETA</small></span></div>
@@ -31,6 +42,12 @@
     <button class="secondary-button full" id="exportBtn">Exporter mes données (JSON)</button>
     <label class="secondary-button full file-label">Importer une sauvegarde JSON<input type="file" id="importFile" accept="application/json"></label>
     <button class="danger-button full" id="clearBtn">Effacer toutes les données</button>
+  </dialog>
+  <dialog id="updateDialog">
+    <div class="dialog-head"><h2>Mise à jour disponible</h2></div>
+    <p class="muted">Une nouvelle version de GymTracker est prête.</p>
+    <button class="primary-button full" id="installUpdate">Télécharger et installer</button>
+    <button class="secondary-button full" id="laterUpdate" style="margin-top:9px">Plus tard</button>
   </dialog>
   <script src="app.js"></script>
   <script>

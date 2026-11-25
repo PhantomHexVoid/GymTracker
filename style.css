@@ -5,3 +5,17 @@
 .loading-track{width:190px;height:4px;margin-top:17px;border-radius:99px;background:#2b383e;overflow:hidden}
 .loading-progress{display:block;width:38%;height:100%;border-radius:99px;background:#72d6a0;box-shadow:0 0 12px #72d6a088;animation:loading-sweep 1.25s ease-in-out infinite}
 @keyframes loading-sweep{0%{transform:translateX(-110%)}50%{transform:translateX(95%)}100%{transform:translateX(290%)}}
+
+/* Splash screen inspired by the supplied NutriTracker reference */
+.splash{position:fixed;inset:0;z-index:1000;background:#0d1b16;padding:24px;display:flex;align-items:center;justify-content:center;transition:opacity .35s ease,visibility .35s ease}
+.splash.hide{opacity:0;visibility:hidden;pointer-events:none}
+.splash-brand{width:100%;display:flex;flex-direction:column;align-items:center;gap:0;text-align:center}
+.splash-mark{width:144px;height:144px;flex:0 0 144px;border-radius:42px;background:#ddf2e7;color:#17382c;display:grid;place-items:center;font-size:54px;font-weight:400;margin:0 0 78px;line-height:1}
+.splash-brand strong{font-size:clamp(34px,8vw,54px);line-height:1.12;letter-spacing:-1.8px;color:#fff}
+.splash-brand small{font-size:22px;letter-spacing:3px;color:#b2c9bd;text-transform:lowercase;margin-top:16px}
+.loading-area{width:min(100%,360px);margin-top:80px;display:flex;flex-direction:column;align-items:center;gap:25px}
+.loading-track{width:238px;height:8px;margin:0;border-radius:99px;background:#3b4b44;overflow:hidden}
+.loading-progress{display:block;width:40%;height:100%;border-radius:99px;background:#a4e2bc;box-shadow:0 0 8px #a4e2bc66;animation:loading-sweep 1.35s ease-in-out infinite}
+.loading-area p{margin:0;color:#b2c9bd;font-size:17px;line-height:1.4;font-weight:400}
+@keyframes loading-sweep{0%{transform:translateX(-110%)}50%{transform:translateX(95%)}100%{transform:translateX(290%)}}
+@media(max-width:420px){.splash-mark{width:116px;height:116px;flex-basis:116px;border-radius:34px;margin-bottom:48px}.splash-brand small{font-size:18px}.loading-area{margin-top:72px}.loading-area p{font-size:15px}}
