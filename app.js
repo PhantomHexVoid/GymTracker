@@ -1,11 +1,13 @@
 (() => {
 const KEY='gymtracker-beta-data';
 const library=[
-['Presse à cuisses','Jambes'],['Leg extension','Jambes'],['Leg curl','Jambes'],['Squat','Jambes'],['Fentes','Jambes'],
-['Développé couché','Pectoraux'],['Chest press','Pectoraux'],['Écartés à la poulie','Pectoraux'],
-['Tirage vertical','Dos'],['Tirage horizontal','Dos'],['Rowing haltère','Dos'],
-['Développé épaules','Épaules'],['Élévations latérales','Épaules'],
-['Curl biceps','Bras'],['Extension triceps','Bras'],['Crunch','Abdos'],['Gainage','Abdos']
+['Presse à cuisses','Jambes'],['Squat','Jambes'],['Squat guidé (Smith)','Jambes'],['Hack squat','Jambes'],['Presse horizontale','Jambes'],['Fentes','Jambes'],['Fentes bulgares','Jambes'],['Soulevé de terre','Jambes'],['Soulevé de terre jambes tendues','Jambes'],['Hip thrust','Jambes'],['Leg extension','Jambes'],['Leg curl assis','Jambes'],['Leg curl couché','Jambes'],['Adducteurs machine','Jambes'],['Abducteurs machine','Jambes'],['Mollets debout','Jambes'],['Mollets assis','Jambes'],
+['Développé couché','Pectoraux'],['Développé couché incliné','Pectoraux'],['Développé couché décliné','Pectoraux'],['Développé haltères','Pectoraux'],['Développé incliné haltères','Pectoraux'],['Chest press','Pectoraux'],['Butterfly','Pectoraux'],['Pec deck','Pectoraux'],['Écartés à la poulie','Pectoraux'],['Écartés haltères','Pectoraux'],['Pompes','Pectoraux'],['Dips','Pectoraux'],
+['Tirage vertical','Dos'],['Tirage vertical prise serrée','Dos'],['Tirage horizontal','Dos'],['Rowing haltère','Dos'],['Rowing barre','Dos'],['Rowing T-bar','Dos'],['Rowing assis poulie','Dos'],['Tractions','Dos'],['Soulevé de terre','Dos'],['Pull-over poulie','Dos'],['Extensions lombaires','Dos'],
+['Développé épaules','Épaules'],['Développé militaire','Épaules'],['Développé Arnold','Épaules'],['Élévations latérales','Épaules'],['Élévations latérales à la poulie','Épaules'],['Élévations frontales','Épaules'],['Oiseau (arrière épaules)','Épaules'],['Reverse pec deck','Épaules'],['Shrugs (haussements d’épaules)','Épaules'],
+['Curl biceps','Bras'],['Curl marteau','Bras'],['Curl pupitre','Bras'],['Curl incliné haltères','Bras'],['Curl poulie','Bras'],['Extension triceps poulie','Bras'],['Extension triceps corde','Bras'],['Barre au front','Bras'],['Extension triceps au-dessus de la tête','Bras'],['Développé serré','Bras'],
+['Crunch','Abdos'],['Crunch poulie','Abdos'],['Relevés de jambes','Abdos'],['Gainage','Abdos'],['Gainage latéral','Abdos'],['Russian twists','Abdos'],['Abdos machine','Abdos'],
+['Développé couché prise serrée','Haut du corps'],['Farmer walk','Haut du corps']
 ].map((x,i)=>({id:'lib'+i,name:x[0],category:x[1]}));
 let data;try{data=JSON.parse(localStorage.getItem(KEY))||{}}catch{data={}}
 data.workouts=data.workouts||[];
@@ -29,7 +31,7 @@ function home(){
   <div class="row-between"><div class="exercise-title"><span class="mini-icon">✦</span><div><strong>${esc(x.name)}</strong><small>${esc(x.category||'Exercice personnalisé')}</small></div></div><button class="remove-btn" aria-label="Supprimer ${esc(x.name)}" data-action="remove" data-index="${i}">×</button></div>
   <div class="current-weight-panel">
    <span class="current-label">POIDS ACTUEL</span>
-   <div class="current-controls"><button class="step-btn" aria-label="Diminuer de 5 kg" data-action="step" data-delta="-5" data-index="${i}">−</button><strong>${Number(x.current).toLocaleString('fr-FR',{maximumFractionDigits:1})}<small>kg</small></strong><button class="step-btn" aria-label="Augmenter de 5 kg" data-action="step" data-delta="5" data-index="${i}">+</button></div>
+   <div class="current-controls"><button class="step-btn" aria-label="Diminuer de 1 kg" data-action="step" data-delta="-1" data-index="${i}">−</button><strong>${Number(x.current).toLocaleString('fr-FR',{maximumFractionDigits:1})}<small>kg</small></strong><button class="step-btn" aria-label="Augmenter de 1 kg" data-action="step" data-delta="1" data-index="${i}">+</button></div>
   </div>
   <div class="initial-compact"><span>Poids initial</span><label><input aria-label="Poids initial de ${esc(x.name)}" type="number" min="0" step="0.5" value="${x.initial}" data-field="initial" data-index="${i}"><b>kg</b></label></div>
   <div class="progress-note">${Number(x.current)>=Number(x.initial)?`+${(Number(x.current)-Number(x.initial)).toLocaleString('fr-FR',{maximumFractionDigits:1})} kg depuis le départ`:`${(Number(x.current)-Number(x.initial)).toLocaleString('fr-FR',{maximumFractionDigits:1})} kg depuis le départ`}</div>

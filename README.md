@@ -3,7 +3,7 @@
 Interface simplifiée : tout le suivi des exercices se fait depuis la page d'accueil.
 
 ## Publication
-Décompresse l'archive et téléverse les 8 fichiers directement à la racine du dépôt GitHub, puis valide les changements. GitHub Pages doit publier `main` depuis `/ (root)`.
+Décompresse l'archive et téléverse les 11 fichiers directement à la racine du dépôt GitHub, puis valide les changements. GitHub Pages doit publier `main` depuis `/ (root)`.
 
 ## Utilisation
 - Ajoute un exercice depuis la page d'accueil.
@@ -12,4 +12,4 @@ Décompresse l'archive et téléverse les 8 fichiers directement à la racine du
 - L'historique des séances reste accessible depuis le lien dédié.
 - Les données sont stockées localement dans le navigateur. Exporte une sauvegarde depuis les paramètres.
 
-Version 0.3.3-beta.
+Version 0.3.6-beta.\n\nIcônes : `icon.svg`, `icon-192.png`, `icon-512.png` et `apple-touch-icon.png`.
