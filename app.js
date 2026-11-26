@@ -24,45 +24,13 @@ let page='sessions';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const save=()=>localStorage.setItem(KEY,JSON.stringify(data));
 const heading=(small,title,sub)=>`<header class="simple-heading"><p class="eyebrow">${small}</p><h1>${title}</h1><p class="muted">${sub}</p></header>`;
-function exerciseIcon(x){
- const cat=((x.category||'')+' '+(x.name||'')).toLocaleLowerCase('fr');
- let glyph='';
- if(/jamb|squat|presse|fente|mollet|hip thrust/.test(cat)) glyph='<path d="M8 8l8 8m-3-11 3 3-5 5-3-3zM16 16l8 8m-3-11 3 3-5 5-3-3z"/><path d="M5 5l4 4m10 10 4 4"/>';
- else if(/dos|tirage|rowing|traction/.test(cat)) glyph='<path d="M4 7h16M7 7v4m10-4v4M9 11l3 3 3-3M12 14v6"/>';
- else if(/épaule/.test(cat)) glyph='<path d="M4 18l8-8 8 8M12 10V4m-3 3 3-3 3 3"/>';
- else glyph='<path d="M4 15l5-5 6 6 5-5M3 18l3 3m12-12 3 3M8 8l3-3m2 14 3-3"/>';
- return `<svg viewBox="0 0 28 28" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${glyph}</g></svg>`;
-}
-function programExerciseCard(x,pIndex,exIndex){
- const initial=Number(x.initial)||0, current=Number(x.current)||0, delta=current-initial;
- const gain=(delta>=0?'+':'')+delta.toLocaleString('fr-FR',{maximumFractionDigits:1})+' kg';
- const cfg=(data.programs[pIndex].exerciseSettings||{})[x.id]||{sets:4,reps:'8 – 12'};
- return `<article class="session-exercise-card">
-  <div class="session-exercise-top">
-   <span class="drag-grip" aria-hidden="true">⠿</span>
-   <span class="exercise-icon">${exerciseIcon(x)}</span>
-   <div class="session-exercise-name"><strong>${esc(x.name)}</strong><small>${esc(x.category||'Exercice')}</small></div>
-   <button class="remove-btn" data-action="remove-program-exercise" data-program="${pIndex}" data-exercise="${esc(x.id)}" aria-label="Retirer ${esc(x.name)}">×</button>
-  </div>
-  <div class="program-exercise-progress">
-   <div class="progress-weight"><span>Poids initial</span><strong>${initial.toLocaleString('fr-FR',{maximumFractionDigits:1})}<small> kg</small></strong></div>
-   <div class="progress-curve"><span class="gain-chip">${gain}</span><svg viewBox="0 0 120 54" preserveAspectRatio="none" aria-hidden="true"><path class="curve-fill" d="M4 45 C38 46 64 29 116 7 L116 54 L4 54 Z"/><path class="curve-line" d="M4 45 C38 46 64 29 116 7"/><circle cx="4" cy="45" r="3.5"/><circle cx="116" cy="7" r="3.5"/></svg></div>
-   <div class="progress-weight current"><span>Poids actuel</span><strong>${current.toLocaleString('fr-FR',{maximumFractionDigits:1})}<small> kg</small></strong></div>
-  </div>
-  <div class="session-weight-action">
-   <span class="weight-action-label">Charge actuelle</span>
-   <button class="add-weight-btn" data-action="add-program-weight" data-program="${pIndex}" data-exercise="${esc(x.id)}">＋ 1 kg</button>
-  </div>
- </article>`;
-}
-
 function home(){
  const rows=data.trackedExercises;
  return `<section class="page">
  ${heading('SUIVI DE PROGRESSION','Mes exercices','Tes poids de départ et tes poids actuels, au même endroit.')}
  <div class="row-between"><h2 class="section-heading">Ma progression</h2><div class="progress-actions"><span class="pill">${rows.length} exercice${rows.length>1?'s':''}</span><button class="add-icon-btn" data-action="open-add" aria-label="Ajouter un exercice" title="Ajouter un exercice">＋</button></div></div>
  ${rows.length?`<div class="tracked-list">${rows.map((x,i)=>`<article class="tracked-card">
-  <div class="row-between"><div class="exercise-title"><span class="exercise-icon">${exerciseIcon(x)}</span><div><strong>${esc(x.name)}</strong><small>${esc(x.category||'Exercice personnalisé')}</small></div></div><div class="exercise-card-actions"><button class="move-btn" aria-label="Monter ${esc(x.name)}" data-action="move-up" data-index="${i}" ${i===0?"disabled":""}>↑</button><button class="move-btn" aria-label="Descendre ${esc(x.name)}" data-action="move-down" data-index="${i}" ${i===rows.length-1?"disabled":""}>↓</button><button class="remove-btn" aria-label="Supprimer ${esc(x.name)}" data-action="remove" data-index="${i}">×</button></div></div>
+  <div class="row-between"><div class="exercise-title"><span class="mini-icon">✦</span><div><strong>${esc(x.name)}</strong><small>${esc(x.category||'Exercice personnalisé')}</small></div></div><div class="exercise-card-actions"><button class="move-btn" aria-label="Monter ${esc(x.name)}" data-action="move-up" data-index="${i}" ${i===0?"disabled":""}>↑</button><button class="move-btn" aria-label="Descendre ${esc(x.name)}" data-action="move-down" data-index="${i}" ${i===rows.length-1?"disabled":""}>↓</button><button class="remove-btn" aria-label="Supprimer ${esc(x.name)}" data-action="remove" data-index="${i}">×</button></div></div>
   <div class="current-weight-panel">
    <span class="current-label">POIDS ACTUEL</span>
    <div class="current-controls"><button class="step-btn" aria-label="Diminuer de 1 kg" data-action="step" data-delta="-1" data-index="${i}">−</button><strong>${Number(x.current).toLocaleString('fr-FR',{maximumFractionDigits:1})}<small>kg</small></strong><button class="step-btn" aria-label="Augmenter de 1 kg" data-action="step" data-delta="1" data-index="${i}">+</button></div>
@@ -87,14 +55,22 @@ function home(){
  </section>`;
 }
 
-function programExerciseCard(x){
- const initial=Number(x.initial)||0, current=Number(x.current)||0, delta=current-initial;
+function exerciseIcon(x){
+ const t=((x.name||'')+' '+(x.category||'')).toLocaleLowerCase('fr');
+ let path='M4 14h20M7 10v8m14-8v8M10 12l4-4 4 4';
+ if(/jamb|squat|presse|fente|mollet|hip thrust/.test(t)) path='M9 4l3 5-2 5-3 9M16 4l-1 6 3 4 2 9';
+ else if(/dos|tirage|rowing|traction/.test(t)) path='M4 6h20M7 6v5m14-5v5M8 11l4 5 4-5m-4 5v8';
+ else if(/épaule|élévation|oiseau/.test(t)) path='M4 19l8-9 4 4 8-9M12 10V4m-3 3 3-3 3 3';
+ else if(/abdo|gainage|crunch/.test(t)) path='M7 5l5 5 4-2 5 5M12 10l-2 9m6-11 2 11';
+ return `<svg viewBox="0 0 28 28" aria-hidden="true"><path d="${path}" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+}
+function programExerciseCard(x,pIndex){
+ const initial=Number(x.initial)||0,current=Number(x.current)||0,delta=current-initial;
  const gain=(delta>=0?'+':'')+delta.toLocaleString('fr-FR',{maximumFractionDigits:1})+' kg';
- return `<div class="program-exercise-progress">
-  <div class="progress-weight"><span>Poids initial</span><strong>${initial.toLocaleString('fr-FR',{maximumFractionDigits:1})}<small> kg</small></strong></div>
-  <div class="progress-curve"><span class="gain-chip">${gain}</span><svg viewBox="0 0 120 54" preserveAspectRatio="none" aria-hidden="true"><path class="curve-fill" d="M4 45 C38 46 64 29 116 7 L116 54 L4 54 Z"/><path class="curve-line" d="M4 45 C38 46 64 29 116 7"/><circle cx="4" cy="45" r="3.5"/><circle cx="116" cy="7" r="3.5"/></svg></div>
-  <div class="progress-weight current"><span>Poids actuel</span><strong>${current.toLocaleString('fr-FR',{maximumFractionDigits:1})}<small> kg</small></strong></div>
- </div>`;
+ return `<article class="session-exercise-card">
+ <div class="session-exercise-top"><span class="drag-grip">⠿</span><span class="exercise-icon">${exerciseIcon(x)}</span><div class="session-exercise-name"><strong>${esc(x.name)}</strong><small>${esc(x.category||'Exercice')}</small></div><button class="remove-btn" data-action="remove-program-exercise" data-program="${pIndex}" data-exercise="${esc(x.id)}" aria-label="Retirer">×</button></div>
+ <div class="program-exercise-progress"><div class="progress-weight"><span>Poids initial</span><strong>${initial.toLocaleString('fr-FR',{maximumFractionDigits:1})}<small> kg</small></strong></div><div class="progress-curve"><span class="gain-chip">${gain}</span><svg viewBox="0 0 120 54" preserveAspectRatio="none" aria-hidden="true"><path class="curve-fill" d="M4 45 C38 46 64 29 116 7 L116 54 L4 54 Z"/><path class="curve-line" d="M4 45 C38 46 64 29 116 7"/><circle cx="4" cy="45" r="3.5"/><circle cx="116" cy="7" r="3.5"/></svg></div><div class="progress-weight current"><span>Poids actuel</span><strong>${current.toLocaleString('fr-FR',{maximumFractionDigits:1})}<small> kg</small></strong></div></div>
+ <div class="session-weight-action"><span class="weight-action-label">Charge actuelle</span><button class="add-weight-btn" data-action="add-program-weight" data-exercise="${esc(x.id)}">＋ 1 kg</button></div></article>`;
 }
 
 function sessions(){
@@ -103,7 +79,7 @@ function sessions(){
  const cards=programs.length?`<div class="stack">${programs.map((p,i)=>`<article class="panel workout-card">
   <div class="row-between"><strong>${esc(p.name)}</strong><button class="remove-btn" data-action="delete-program" data-index="${i}" aria-label="Supprimer ${esc(p.name)}">×</button></div>
   <div class="program-days">${(p.days||[]).map(d=>`<span class="day-chip">${esc(d)}</span>`).join('')}</div>
-  <div class="program-exercises">${(p.exerciseIds||[]).map(id=>data.trackedExercises.find(x=>x.id===id)).filter(Boolean).map((x,j)=>programExerciseCard(x,i,j)).join('')}</div>
+  <div class="program-exercises">${(p.exerciseIds||[]).map(id=>data.trackedExercises.find(x=>x.id===id)).filter(Boolean).map(x=>programExerciseCard(x,i)).join('')}</div>
   <button class="text-button" data-action="edit-program" data-index="${i}">Modifier le programme</button>
  </article>`).join('')}</div>`:`<div class="empty-state"><span class="mini-icon">✦</span><b>Aucun programme pour le moment</b><span>Crée tes séances hebdomadaires à partir de tes exercices enregistrés.</span></div>`;
  return `<section class="page">${heading('TON PLANNING','Séances','Organise tes programmes de la semaine.')}
@@ -133,16 +109,9 @@ document.addEventListener('click',e=>{
  if(a==='open-program'){editingProgram=-1;const dlg=document.getElementById('programDialog');if(!dlg)return;document.getElementById('programDialogTitle').textContent='Nouveau programme';document.getElementById('programName').value='';dlg.querySelectorAll('input[type="checkbox"]').forEach(x=>x.checked=false);dlg.showModal();return}
  if(a==='close-program'){document.getElementById('programDialog')?.close();return}
  if(a==='edit-program'){editingProgram=Number(b.dataset.index);const p=data.programs[editingProgram],dlg=document.getElementById('programDialog');document.getElementById('programDialogTitle').textContent='Modifier le programme';document.getElementById('programName').value=p.name||'';dlg.querySelectorAll('input[name="programDay"]').forEach(x=>x.checked=(p.days||[]).includes(x.value));dlg.querySelectorAll('input[name="programExercise"]').forEach(x=>x.checked=(p.exerciseIds||[]).includes(x.value));dlg.showModal();return}
- if(a==='save-program'){const name=document.getElementById('programName').value.trim();const days=[...document.querySelectorAll('input[name="programDay"]:checked')].map(x=>x.value);const exerciseIds=[...document.querySelectorAll('input[name="programExercise"]:checked')].map(x=>x.value);if(!name){alert('Donne un nom à ton programme.');return}if(!days.length){alert('Choisis au moins un jour.');return}if(!exerciseIds.length){alert('Choisis au moins un exercice.');return}const previous=editingProgram>=0?data.programs[editingProgram]:null;const exerciseSettings={...(previous?.exerciseSettings||{})};exerciseIds.forEach(id=>{if(!exerciseSettings[id])exerciseSettings[id]={sets:4,reps:'8 – 12'}});const item={name,days,exerciseIds,exerciseSettings};if(editingProgram>=0)data.programs[editingProgram]=item;else data.programs.push(item);save();document.getElementById('programDialog').close();render();return}
- if(a==='add-program-weight'){
-  const id=b.dataset.exercise;
-  const ex=data.trackedExercises.find(x=>x.id===id);
-  if(ex){ex.current=Math.round((Number(ex.current||0)+1)*10)/10;save();render();}
-  return;
- }
- if(a==='remove-program-exercise'){
-  const pi=Number(b.dataset.program),id=b.dataset.exercise,p=data.programs[pi];p.exerciseIds=p.exerciseIds.filter(x=>x!==id);save();render();return;
- }
+ if(a==='save-program'){const name=document.getElementById('programName').value.trim();const days=[...document.querySelectorAll('input[name="programDay"]:checked')].map(x=>x.value);const exerciseIds=[...document.querySelectorAll('input[name="programExercise"]:checked')].map(x=>x.value);if(!name){alert('Donne un nom à ton programme.');return}if(!days.length){alert('Choisis au moins un jour.');return}if(!exerciseIds.length){alert('Choisis au moins un exercice.');return}const item={name,days,exerciseIds};if(editingProgram>=0)data.programs[editingProgram]=item;else data.programs.push(item);save();document.getElementById('programDialog').close();render();return}
+ if(a==='add-program-weight'){const ex=data.trackedExercises.find(x=>x.id===b.dataset.exercise);if(ex){ex.current=Math.round((Number(ex.current||0)+1)*10)/10;save();render()}return}
+ if(a==='remove-program-exercise'){const pi=Number(b.dataset.program),id=b.dataset.exercise,p=data.programs[pi];if(p){p.exerciseIds=p.exerciseIds.filter(x=>x!==id);save();render()}return}
  if(a==='delete-program'){if(confirm('Supprimer ce programme ?')){data.programs.splice(Number(b.dataset.index),1);save();render()}return}
  if(a==='move-up'||a==='move-down'){
   const i=Number(b.dataset.index),j=a==='move-up'?i-1:i+1;
@@ -190,8 +159,6 @@ document.addEventListener('input',e=>{
  list.innerHTML=matches.length?matches.map(x=>`<button type="button" class="suggestion" data-action="choose-exercise" data-index="${x.index}"><span>${esc(x.name)}</span><small>${esc(x.category)}</small></button>`).join(''):`<button type="button" class="suggestion custom-suggestion" data-action="choose-custom"><span>＋ Ajouter « ${esc(e.target.value.trim())} »</span><small>Exercice personnalisé</small></button>`;
 });
 app.addEventListener('change',e=>{
- if(e.target.matches('[data-action="change-reps"]')){const pi=Number(e.target.dataset.program),id=e.target.dataset.exercise,p=data.programs[pi];p.exerciseSettings=p.exerciseSettings||{};const cfg=p.exerciseSettings[id]||{sets:4,reps:'8 – 12'};cfg.reps=e.target.value;p.exerciseSettings[id]=cfg;save();return}
-
  if(e.target.matches('[data-field="initial"]')){const i=Number(e.target.dataset.index),v=Number(e.target.value);if(Number.isFinite(v)&&v>=0){data.trackedExercises[i].initial=v;save();render()}}
 });
 document.getElementById('settingsBtn')?.addEventListener('click',()=>document.getElementById('settingsDialog').showModal());
