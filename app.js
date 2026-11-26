@@ -30,7 +30,7 @@ function home(){
  ${heading('SUIVI DE PROGRESSION','Mes exercices','Tes poids de départ et tes poids actuels, au même endroit.')}
  <div class="row-between"><h2 class="section-heading">Ma progression</h2><div class="progress-actions"><span class="pill">${rows.length} exercice${rows.length>1?'s':''}</span><button class="add-icon-btn" data-action="open-add" aria-label="Ajouter un exercice" title="Ajouter un exercice">＋</button></div></div>
  ${rows.length?`<div class="tracked-list">${rows.map((x,i)=>`<article class="tracked-card">
-  <div class="row-between"><div class="exercise-title"><span class="mini-icon">✦</span><div><strong>${esc(x.name)}</strong><small>${esc(x.category||'Exercice personnalisé')}</small></div></div><button class="remove-btn" aria-label="Supprimer ${esc(x.name)}" data-action="remove" data-index="${i}">×</button></div>
+  <div class="row-between"><div class="exercise-title"><span class="mini-icon">✦</span><div><strong>${esc(x.name)}</strong><small>${esc(x.category||'Exercice personnalisé')}</small></div></div><div class="exercise-card-actions"><button class="move-btn" aria-label="Monter ${esc(x.name)}" data-action="move-up" data-index="${i}" ${i===0?"disabled":""}>↑</button><button class="move-btn" aria-label="Descendre ${esc(x.name)}" data-action="move-down" data-index="${i}" ${i===rows.length-1?"disabled":""}>↓</button><button class="remove-btn" aria-label="Supprimer ${esc(x.name)}" data-action="remove" data-index="${i}">×</button></div></div>
   <div class="current-weight-panel">
    <span class="current-label">POIDS ACTUEL</span>
    <div class="current-controls"><button class="step-btn" aria-label="Diminuer de 1 kg" data-action="step" data-delta="-1" data-index="${i}">−</button><strong>${Number(x.current).toLocaleString('fr-FR',{maximumFractionDigits:1})}<small>kg</small></strong><button class="step-btn" aria-label="Augmenter de 1 kg" data-action="step" data-delta="1" data-index="${i}">+</button></div>
@@ -40,7 +40,11 @@ function home(){
  </article>`).join('')}</div>`:`<div class="empty-state"><span class="mini-icon">✦</span><b>Pas encore d'exercice suivi</b><span>Appuie sur le + pour ajouter tes premiers exercices.</span></div>`}
  <dialog id="addExerciseDialog" class="app-dialog">
   <div class="dialog-head"><h2>Ajouter un exercice</h2><button class="icon-button" data-action="close-add" aria-label="Fermer">✕</button></div>
-  <label class="field">Choisir un exercice<select id="addExerciseSelect"><option value="">Sélectionner...</option>${library.map((x,i)=>`<option value="${i}">${esc(x.name)} · ${esc(x.category)}</option>`).join('')}</select></label>
+  <div class="field exercise-search-field">Rechercher un exercice
+   <input id="exerciseSearch" type="text" autocomplete="off" placeholder="Tape le nom de l’exercice…" aria-label="Rechercher un exercice">
+   <div id="exerciseSuggestions" class="exercise-suggestions"><span class="suggestion-hint">Commence à taper pour voir les suggestions.</span></div>
+   <select id="addExerciseSelect" hidden><option value="">Sélectionner...</option>${library.map((x,i)=>`<option value="${i}">${esc(x.name)} · ${esc(x.category)}</option>`).join('')}</select>
+  </div>
   <div class="form-grid">
    <label class="field">Poids initial (kg)<input id="newInitial" type="number" min="0" step="0.5" placeholder="Ex. 20"></label>
    <label class="field">Poids actuel (kg)<input id="newCurrent" type="number" min="0" step="0.5" placeholder="Ex. 35"></label>
@@ -89,7 +93,18 @@ document.addEventListener('click',e=>{
  if(a==='edit-program'){editingProgram=Number(b.dataset.index);const p=data.programs[editingProgram],dlg=document.getElementById('programDialog');document.getElementById('programDialogTitle').textContent='Modifier le programme';document.getElementById('programName').value=p.name||'';dlg.querySelectorAll('input[name="programDay"]').forEach(x=>x.checked=(p.days||[]).includes(x.value));dlg.querySelectorAll('input[name="programExercise"]').forEach(x=>x.checked=(p.exerciseIds||[]).includes(x.value));dlg.showModal();return}
  if(a==='save-program'){const name=document.getElementById('programName').value.trim();const days=[...document.querySelectorAll('input[name="programDay"]:checked')].map(x=>x.value);const exerciseIds=[...document.querySelectorAll('input[name="programExercise"]:checked')].map(x=>x.value);if(!name){alert('Donne un nom à ton programme.');return}if(!days.length){alert('Choisis au moins un jour.');return}if(!exerciseIds.length){alert('Choisis au moins un exercice.');return}const item={name,days,exerciseIds};if(editingProgram>=0)data.programs[editingProgram]=item;else data.programs.push(item);save();document.getElementById('programDialog').close();render();return}
  if(a==='delete-program'){if(confirm('Supprimer ce programme ?')){data.programs.splice(Number(b.dataset.index),1);save();render()}return}
- if(a==='open-add'){document.getElementById('addExerciseDialog')?.showModal();return}
+ if(a==='move-up'||a==='move-down'){
+  const i=Number(b.dataset.index),j=a==='move-up'?i-1:i+1;
+  if(j>=0&&j<data.trackedExercises.length){[data.trackedExercises[i],data.trackedExercises[j]]=[data.trackedExercises[j],data.trackedExercises[i]];save();render();}
+  return;
+ }
+ if(a==='choose-exercise'){
+  const idx=Number(b.dataset.index),sel=document.getElementById('addExerciseSelect'),search=document.getElementById('exerciseSearch');
+  if(sel)sel.value=String(idx);if(search)search.value=library[idx].name;
+  const list=document.getElementById('exerciseSuggestions');if(list)list.innerHTML=`<button type="button" class="suggestion selected" disabled>✓ ${esc(library[idx].name)} <small>${esc(library[idx].category)}</small></button>`;
+  return;
+ }
+ if(a==='open-add'){const dlg=document.getElementById('addExerciseDialog');const search=document.getElementById('exerciseSearch');const sel=document.getElementById('addExerciseSelect');const list=document.getElementById('exerciseSuggestions');if(search)search.value='';if(sel)sel.value='';if(list)list.innerHTML='<span class="suggestion-hint">Commence à taper pour voir les suggestions.</span>';dlg?.showModal();return}
  if(a==='close-add'){document.getElementById('addExerciseDialog')?.close();return}
  if(a==='add'){
   const select=document.getElementById('addExerciseSelect'),n=Number(select?.value);
@@ -103,6 +118,17 @@ document.addEventListener('click',e=>{
  }
  if(a==='step'){const x=data.trackedExercises[Number(b.dataset.index)];if(!x)return;x.current=Math.max(0,Math.round((Number(x.current)+Number(b.dataset.delta))*10)/10);save();render();return}
  if(a==='remove'){if(confirm('Retirer cet exercice de ta page ?')){data.trackedExercises.splice(Number(b.dataset.index),1);save();render()}return}
+});
+document.addEventListener('input',e=>{
+ if(e.target.id!=='exerciseSearch')return;
+ const q=e.target.value.trim().toLocaleLowerCase('fr');
+ const list=document.getElementById('exerciseSuggestions');
+ const select=document.getElementById('addExerciseSelect');
+ if(!list||!select)return;
+ select.value='';
+ if(!q){list.innerHTML='<span class="suggestion-hint">Commence à taper pour voir les suggestions.</span>';return}
+ const matches=library.map((x,i)=>({...x,index:i})).filter(x=>x.name.toLocaleLowerCase('fr').includes(q)||x.category.toLocaleLowerCase('fr').includes(q)).slice(0,12);
+ list.innerHTML=matches.length?matches.map(x=>`<button type="button" class="suggestion" data-action="choose-exercise" data-index="${x.index}"><span>${esc(x.name)}</span><small>${esc(x.category)}</small></button>`).join(''):'<span class="suggestion-hint">Aucun exercice trouvé.</span>';
 });
 app.addEventListener('change',e=>{
  if(e.target.matches('[data-field="initial"]')){const i=Number(e.target.dataset.index),v=Number(e.target.value);if(Number.isFinite(v)&&v>=0){data.trackedExercises[i].initial=v;save();render()}}
