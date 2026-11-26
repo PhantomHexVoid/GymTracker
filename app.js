@@ -55,13 +55,23 @@ function home(){
  </section>`;
 }
 
+function programExerciseCard(x){
+ const initial=Number(x.initial)||0, current=Number(x.current)||0, delta=current-initial;
+ const gain=(delta>=0?'+':'')+delta.toLocaleString('fr-FR',{maximumFractionDigits:1})+' kg';
+ return `<div class="program-exercise-progress">
+  <div class="progress-weight"><span>Poids initial</span><strong>${initial.toLocaleString('fr-FR',{maximumFractionDigits:1})}<small> kg</small></strong></div>
+  <div class="progress-curve"><span class="gain-chip">${gain}</span><svg viewBox="0 0 120 54" preserveAspectRatio="none" aria-hidden="true"><path class="curve-fill" d="M4 45 C38 46 64 29 116 7 L116 54 L4 54 Z"/><path class="curve-line" d="M4 45 C38 46 64 29 116 7"/><circle cx="4" cy="45" r="3.5"/><circle cx="116" cy="7" r="3.5"/></svg></div>
+  <div class="progress-weight current"><span>Poids actuel</span><strong>${current.toLocaleString('fr-FR',{maximumFractionDigits:1})}<small> kg</small></strong></div>
+ </div>`;
+}
+
 function sessions(){
  const days=['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
  const programs=data.programs||[];
  const cards=programs.length?`<div class="stack">${programs.map((p,i)=>`<article class="panel workout-card">
   <div class="row-between"><strong>${esc(p.name)}</strong><button class="remove-btn" data-action="delete-program" data-index="${i}" aria-label="Supprimer ${esc(p.name)}">×</button></div>
   <div class="program-days">${(p.days||[]).map(d=>`<span class="day-chip">${esc(d)}</span>`).join('')}</div>
-  <div class="program-exercises">${(p.exerciseIds||[]).map(id=>data.trackedExercises.find(x=>x.id===id)).filter(Boolean).map(x=>`<div class="row-between"><span>${esc(x.name)}</span><small>${Number(x.current).toLocaleString('fr-FR',{maximumFractionDigits:1})} kg</small></div>`).join('')}</div>
+  <div class="program-exercises">${(p.exerciseIds||[]).map(id=>data.trackedExercises.find(x=>x.id===id)).filter(Boolean).map(x=>`<div class="program-exercise-item"><strong>${esc(x.name)}</strong><span class="program-category">${esc(x.category||'Exercice')}</span>${programExerciseCard(x)}</div>`).join('')}</div>
   <button class="text-button" data-action="edit-program" data-index="${i}">Modifier le programme</button>
  </article>`).join('')}</div>`:`<div class="empty-state"><span class="mini-icon">✦</span><b>Aucun programme pour le moment</b><span>Crée tes séances hebdomadaires à partir de tes exercices enregistrés.</span></div>`;
  return `<section class="page">${heading('TON PLANNING','Séances','Organise tes programmes de la semaine.')}

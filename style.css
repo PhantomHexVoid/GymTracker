@@ -162,3 +162,24 @@ input, select, textarea { font-size: 16px !important; }
 .suggestion-hint{display:block;padding:10px 2px;color:var(--muted);font-size:12px}
 
 .custom-suggestion{border-style:dashed;border-color:#477657;background:#1c3027;color:#bff0d1}
+
+
+/* 0.5.8-beta — poids initial/actuel et courbe dans les programmes */
+.program-exercise-item{display:flex;flex-direction:column;gap:7px;padding:12px 0;border-bottom:1px solid var(--line)}
+.program-exercise-item:last-child{border-bottom:0}
+.program-exercise-item>strong{font-size:14px;color:#edf3f1}
+.program-category{font-size:11px;color:var(--muted);margin-top:-5px}
+.program-exercise-progress{display:grid;grid-template-columns:minmax(75px,1fr) minmax(90px,1.1fr) minmax(75px,1fr);align-items:center;gap:8px;background:#17262a;border:1px solid #315344;border-radius:13px;padding:10px 9px;margin-top:3px}
+.progress-weight{display:flex;flex-direction:column;gap:3px;min-width:0}
+.progress-weight span{font-size:10px;color:#aabbb7;white-space:nowrap}
+.progress-weight strong{font-size:20px;color:#edf3f1;white-space:nowrap}
+.progress-weight strong small{font-size:11px;color:#aabbb7}
+.progress-weight.current{text-align:right;align-items:flex-end}
+.progress-weight.current strong{color:#72d6a0}
+.progress-curve{height:58px;position:relative;display:flex;align-items:flex-end;justify-content:center;min-width:0;padding-top:15px}
+.progress-curve svg{width:100%;height:43px;overflow:visible}
+.progress-curve circle{fill:#eafff3;stroke:#72d6a0;stroke-width:1.5}
+.curve-line{fill:none;stroke:#72d6a0;stroke-width:2.2;stroke-linecap:round}
+.curve-fill{fill:#72d6a0;opacity:.12}
+.gain-chip{position:absolute;top:0;left:50%;transform:translateX(-50%);white-space:nowrap;border:1px solid #4c9b70;color:#72d6a0;border-radius:99px;padding:2px 7px;font-size:10px;font-weight:800;background:#1c3027}
+@media(max-width:380px){.program-exercise-progress{grid-template-columns:minmax(65px,1fr) minmax(72px,.9fr) minmax(65px,1fr);gap:5px;padding:8px 6px}.progress-weight strong{font-size:17px}.progress-weight span{font-size:9px}}
