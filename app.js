@@ -98,6 +98,11 @@ document.addEventListener('click',e=>{
   if(j>=0&&j<data.trackedExercises.length){[data.trackedExercises[i],data.trackedExercises[j]]=[data.trackedExercises[j],data.trackedExercises[i]];save();render();}
   return;
  }
+ if(a==='choose-custom'){
+  const search=document.getElementById('exerciseSearch'),list=document.getElementById('exerciseSuggestions'),sel=document.getElementById('addExerciseSelect');
+  if(sel)sel.value='';if(list)list.innerHTML=`<button type="button" class="suggestion selected" disabled>✓ Exercice personnalisé : ${esc(search?.value.trim())}</button>`;
+  return;
+ }
  if(a==='choose-exercise'){
   const idx=Number(b.dataset.index),sel=document.getElementById('addExerciseSelect'),search=document.getElementById('exerciseSearch');
   if(sel)sel.value=String(idx);if(search)search.value=library[idx].name;
@@ -108,11 +113,14 @@ document.addEventListener('click',e=>{
  if(a==='close-add'){document.getElementById('addExerciseDialog')?.close();return}
  if(a==='add'){
   const select=document.getElementById('addExerciseSelect'),n=Number(select?.value);
-  if(!select||select.value===''){alert('Choisis un exercice.');return}
-  const ex=library[n],initialInput=document.getElementById('newInitial'),currentInput=document.getElementById('newCurrent');
+  const searchInput=document.getElementById('exerciseSearch');
+  const typedName=searchInput?.value.trim()||'';
+  const ex=select&&select.value!==''?library[n]:(typedName?{name:typedName,category:'Personnalisé'}:null);
+  if(!ex){alert('Choisis ou saisis le nom d’un exercice.');return}
+  const initialInput=document.getElementById('newInitial'),currentInput=document.getElementById('newCurrent');
   const initial=Number(initialInput?.value),current=Number(currentInput?.value);
   if(!Number.isFinite(initial)||!Number.isFinite(current)||initialInput.value===''||currentInput.value===''||initial<0||current<0){alert('Renseigne les deux poids (initial et actuel).');return}
-  if(data.trackedExercises.some(x=>x.name===ex.name)){alert('Cet exercice est déjà dans ta liste.');return}
+  if(data.trackedExercises.some(x=>x.name.trim().toLocaleLowerCase('fr')===ex.name.trim().toLocaleLowerCase('fr'))){alert('Cet exercice est déjà dans ta liste.');return}
   const newId='track-'+Date.now();data.trackedExercises.push({id:newId,exerciseId:ex.id,name:ex.name,category:ex.category,initial,current});
   save();document.getElementById('addExerciseDialog')?.close();render();return;
  }
@@ -128,7 +136,7 @@ document.addEventListener('input',e=>{
  select.value='';
  if(!q){list.innerHTML='<span class="suggestion-hint">Commence à taper pour voir les suggestions.</span>';return}
  const matches=library.map((x,i)=>({...x,index:i})).filter(x=>x.name.toLocaleLowerCase('fr').includes(q)||x.category.toLocaleLowerCase('fr').includes(q)).slice(0,12);
- list.innerHTML=matches.length?matches.map(x=>`<button type="button" class="suggestion" data-action="choose-exercise" data-index="${x.index}"><span>${esc(x.name)}</span><small>${esc(x.category)}</small></button>`).join(''):'<span class="suggestion-hint">Aucun exercice trouvé.</span>';
+ list.innerHTML=matches.length?matches.map(x=>`<button type="button" class="suggestion" data-action="choose-exercise" data-index="${x.index}"><span>${esc(x.name)}</span><small>${esc(x.category)}</small></button>`).join(''):`<button type="button" class="suggestion custom-suggestion" data-action="choose-custom"><span>＋ Ajouter « ${esc(e.target.value.trim())} »</span><small>Exercice personnalisé</small></button>`;
 });
 app.addEventListener('change',e=>{
  if(e.target.matches('[data-field="initial"]')){const i=Number(e.target.dataset.index),v=Number(e.target.value);if(Number.isFinite(v)&&v>=0){data.trackedExercises[i].initial=v;save();render()}}

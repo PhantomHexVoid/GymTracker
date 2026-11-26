@@ -160,3 +160,5 @@ input, select, textarea { font-size: 16px !important; }
 .suggestion small{color:var(--muted);font-size:11px}
 .suggestion.selected{border-color:#477657;background:#203b2e;color:#bff0d1}
 .suggestion-hint{display:block;padding:10px 2px;color:var(--muted);font-size:12px}
+
+.custom-suggestion{border-style:dashed;border-color:#477657;background:#1c3027;color:#bff0d1}
