@@ -145,3 +145,39 @@ input, select, textarea { font-size: 16px !important; }
   padding: 10px 13px;
   font-size: 13px;
 }
+
+
+/* 0.5.3-beta — espacement plus respirant et fenêtre de mise à jour équilibrée */
+#updateDialog {
+  width: min(360px, calc(100vw - 36px));
+  max-width: calc(100vw - 36px);
+  padding: 20px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+#updateDialog .dialog-head { margin: 0; padding: 0; }
+#updateDialog h2 {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.25;
+  letter-spacing: -.3px;
+}
+#updateDialog p {
+  margin: 0 0 2px;
+  font-size: 13px;
+  line-height: 1.45;
+}
+#updateDialog button {
+  min-height: 48px;
+  padding: 11px 14px;
+  border-radius: 13px;
+  font-size: 14px;
+}
+#updateDialog #laterUpdate { margin-top: 0 !important; }
+#updateDialog::backdrop { background: rgba(0,0,0,.62); }
+.main-content { padding: 28px 20px 34px; }
+.page { gap: 22px; }
+.tracked-list,.stack { gap: 14px; }
+.tracked-card,.panel { padding: 17px; }

@@ -25,7 +25,7 @@
   </div>
   <div class="app-shell">
     <header class="topbar">
-      <div class="brand"><span class="brand-mark">✚</span><span><strong>GymTracker</strong><small>BETA <span class="version-tag" id="appVersion">0.5.2</span></small></span></div>
+      <div class="brand"><span class="brand-mark">✚</span><span><strong>GymTracker</strong><small>BETA <span class="version-tag" id="appVersion">0.5.3</span></small></span></div>
       <button class="icon-button" id="settingsBtn" aria-label="Paramètres">⚙</button>
     </header>
     <main id="app" class="main-content"></main>
@@ -65,21 +65,42 @@
     document.getElementById("laterUpdate").addEventListener("click", () => updateDialog.close());
     document.getElementById("installUpdate").addEventListener("click", async () => {
       const button = document.getElementById("installUpdate");
+      const originalText = button.textContent;
       button.disabled = true;
+      button.textContent = "Installation en cours…";
       try {
-        const info = await (await fetch("./version.json",{cache:"no-store"})).json();
-        localStorage.setItem(updateKey, info.release);
+        const info = await (await fetch("./version.json", {cache:"no-store"})).json();
         const registration = await navigator.serviceWorker.getRegistration();
         if (registration) {
+          let controllerChanged = false;
+          const changed = new Promise(resolve => {
+            navigator.serviceWorker.addEventListener("controllerchange", () => {
+              controllerChanged = true;
+              resolve();
+            }, {once:true});
+          });
           await registration.update();
           if (registration.waiting) {
             registration.waiting.postMessage({type:"SKIP_WAITING"});
-            navigator.serviceWorker.addEventListener("controllerchange", () => location.reload(), {once:true});
-            return;
+          } else if (registration.installing) {
+            await new Promise(resolve => {
+              const worker = registration.installing;
+              if (!worker) return resolve();
+              worker.addEventListener("statechange", () => {
+                if (worker.state === "installed" || worker.state === "activated" || worker.state === "redundant") resolve();
+              });
+            });
+            if (registration.waiting) registration.waiting.postMessage({type:"SKIP_WAITING"});
           }
+          await Promise.race([changed, new Promise(resolve => setTimeout(resolve, 1800))]);
         }
+        localStorage.setItem("gymtracker-installed-release", info.release);
         location.reload();
-      } catch (_) { location.reload(); }
+      } catch (error) {
+        button.disabled = false;
+        button.textContent = originalText;
+        alert("La mise à jour n’a pas pu être installée. Vérifie ta connexion puis réessaie.");
+      }
     });
     if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
       window.addEventListener("load", async () => {
