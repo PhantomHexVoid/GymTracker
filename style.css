@@ -111,3 +111,37 @@ html,body{overscroll-behavior-y:contain}
 .program-exercises{display:flex;flex-direction:column;gap:9px;margin:10px 0;color:#dce7e2;font-size:13px}
 .program-exercises small{color:#72d6a0}
 .text-button{background:transparent;border:0;color:#72d6a0;padding:8px 0;font-weight:700}
+
+
+/* 0.5.1-beta — évite le zoom automatique iOS dans les champs */
+input, select, textarea { font-size: 16px !important; }
+
+
+/* 0.5.2-beta — fenêtre de mise à jour plus compacte */
+#updateDialog {
+  width: min(320px, calc(100vw - 40px));
+  max-width: calc(100vw - 40px);
+  padding: 18px;
+  border-radius: 18px;
+  gap: 12px;
+}
+#updateDialog h2 {
+  font-size: 19px;
+  line-height: 1.2;
+  margin: 0;
+}
+#updateDialog p {
+  font-size: 13px;
+  line-height: 1.4;
+  margin: 0;
+}
+#updateDialog .dialog-head {
+  gap: 8px;
+  margin-bottom: 0;
+}
+#updateDialog .primary-button,
+#updateDialog button {
+  min-height: 42px;
+  padding: 10px 13px;
+  font-size: 13px;
+}
